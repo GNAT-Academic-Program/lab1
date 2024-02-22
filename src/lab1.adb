@@ -2,6 +2,10 @@ with Ada.Real_Time; use Ada.Real_Time;
 with STM32.Board; use STM32.Board;
 with STM32.GPIO; use STM32.GPIO;
 with STM32.Device; use STM32.Device;
+with phase_1; use phase_1;
+with phase_2; use phase_2;
+with phase_3; use phase_3;
+with phase_4; use phase_4;
 
 procedure Lab1 is
 
@@ -25,48 +29,12 @@ procedure Lab1 is
           Resistors => Floating));
    end Initi_LEDs;
 
-   procedure Phase_1 is
-   begin
-      Turn_On (R_LED);
-      Turn_Off (Y_LED);
-      Turn_Off (G_LED);
-
-      delay 10.0;
-   end Phase_1;
-
-   procedure Phase_2 is
-   begin
-      Turn_On (R_LED);
-      Turn_On (Y_LED);
-      Turn_Off (G_LED);
-
-      delay 2.0;
-   end Phase_2;
-
-   procedure Phase_3 is
-   begin
-      Turn_Off (R_LED);
-      Turn_Off (Y_LED);
-      Turn_On (G_LED);
-
-      delay 10.0;
-   end Phase_3;
-
-   procedure Phase_4 is
-   begin
-      Turn_Off (R_LED);
-      Turn_On (Y_LED);
-      Turn_Off (G_LED);
-
-      delay 3.0;
-   end Phase_4;
-
 begin
    Initi_LEDs;
    loop
-      Phase_1;
-      Phase_2;
-      Phase_3;
-      Phase_4;
+      Phase_1.Execute;
+      Phase_2.Execute;
+      Phase_3.Execute;
+      Phase_4.Execute;
    end loop;
 end Lab1;
