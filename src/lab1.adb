@@ -6,6 +6,7 @@ with Phase_1; use phase_1;
 with Phase_2; use phase_2;
 with Phase_3; use phase_3;
 with Phase_4; use phase_4;
+with Phase_5; use phase_5;
 with LEDs; use LEDs;
 procedure Lab1 is
 
@@ -37,12 +38,14 @@ begin
    loop
       Button_Pressed := STM32.GPIO.Set(STM32.Board.User_Button_Point);
       if Button_Pressed then
-         Phase_1.Execute;
-      else
-         --Phase_1.Execute;
          Phase_2.Execute;
          Phase_3.Execute;
          Phase_4.Execute;
+         Phase_3.Execute;
+         Phase_5.Execute;
+      else
+         Phase_1.Execute;
       end if;
+      Phase_1.Execute;
    end loop;
 end Lab1;
