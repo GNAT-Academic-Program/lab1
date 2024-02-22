@@ -1,28 +1,13 @@
-with Ada.Real_Time; use Ada.Real_Time;
 with STM32.Board; use STM32.Board;
 with STM32.GPIO; use STM32.GPIO;
 with STM32.Device; use STM32.Device;
-with Phase_1; use phase_1;
-with Phase_2; use phase_2;
-with Phase_3; use phase_3;
-with Phase_4; use phase_4;
-with Phase_5; use phase_5;
-with LEDs; use LEDs;
-procedure Lab1 is
+with LED; use LED;
+
+procedure Part2 is
 
    LEDs : GPIO_Points := R_LED & Y_LED & G_LED & R_LED_P & G_LED_P;
 
-   procedure Configure_Button is
-   begin
-      STM32.Board.Configure_User_Button_GPIO;
-   end Configure_Button;
-
-   Button_Pressed : Boolean := False;
-
-   Period       : constant Time_Span := Milliseconds (1_000);
-   Next_Release : Time               := Clock;
-
-   procedure Initi_LEDs is
+   procedure Init_LEDs is
    begin
       Enable_Clock (LEDs);
 
@@ -30,22 +15,94 @@ procedure Lab1 is
         (LEDs,
          (Mode => Mode_Out, Output_Type => Push_Pull, Speed => Speed_100MHz,
           Resistors => Floating));
-   end Initi_LEDs;
+   end Init_LEDs;
+
+   procedure Init_Button is
+   begin
+      STM32.Board.Configure_User_Button_GPIO;
+   end Init_Button;
+
+   function Is_Button_Pressed return Boolean is
+      (STM32.GPIO.Set(STM32.Board.User_Button_Point));
+
+   procedure motorist_phase(R: Boolean; Y: Boolean; G: Boolean) is
+   begin
+      if R then On(R_LED); else Off(R_LED); end if;
+      if Y then On(Y_LED); else Off(Y_LED); end if;
+      if G then On(G_LED); else Off(G_LED); end if;
+
+   end motorist_phase;
+
+   procedure pedestrian_walk is
+   begin
+      Off(R_LED_P);
+      On(G_LED_P);
+
+   end pedestrian_walk;
+
+   procedure pedestrian_stop is
+   begin
+      On(R_LED_P);
+      Off(G_LED_P);
+
+   end pedestrian_stop;
+
+   procedure Phase_1 is
+   begin
+      motorist_phase(False, False, True);
+      pedestrian_stop;
+   end Phase_1;
+
+   procedure Phase_2 is
+   begin
+      motorist_phase(False, True, False);
+      pedestrian_stop;
+
+      delay 3.0;
+   end Phase_2;
+
+   procedure Phase_3 is
+   begin
+      motorist_phase(True, False, False);
+      pedestrian_stop;
+
+      delay 1.0;
+   end Phase_3;
+
+   procedure Phase_4 is
+   begin
+      motorist_phase(True, False, False);
+      pedestrian_walk;
+
+      delay 10.0;
+   end Phase_4;
+
+   procedure Phase_5 is
+   begin
+      Phase_3;
+   end Phase_5;
+
+   procedure Phase_6 is
+   begin
+      motorist_phase(True, True, False);
+      pedestrian_stop;
+
+      delay 2.0;
+   end Phase_6;
 
 begin
-   Initi_LEDs;
-   Configure_Button;
+   Init_LEDs;
+   Init_Button;
    loop
-      Button_Pressed := STM32.GPIO.Set(STM32.Board.User_Button_Point);
-      if Button_Pressed then
-         Phase_2.Execute;
-         Phase_3.Execute;
-         Phase_4.Execute;
-         Phase_3.Execute;
-         Phase_5.Execute;
+      if Is_Button_Pressed then
+         Phase_2;
+         Phase_3;
+         Phase_4;
+         Phase_5;
+         Phase_6;
       else
-         Phase_1.Execute;
+         Phase_1;
       end if;
-      Phase_1.Execute;
+      delay 0.01;
    end loop;
-end Lab1;
+end Part2;
