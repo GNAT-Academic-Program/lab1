@@ -9,6 +9,9 @@ package body Phase_3 is
       Turn_On (R_LED);
       Turn_On (Y_LED);
       Turn_Off (G_LED);
+
+      Turn_On(R_LED_P);
+      Turn_Off(G_LED_P);
       delay 1.0;
    end Execute;
 end Phase_3;

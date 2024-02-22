@@ -9,6 +9,9 @@ package body Phase_4 is
       Turn_On (R_LED);
       Turn_Off (Y_LED);
       Turn_On (G_LED);
+
+      Turn_Off(R_LED_P);
+      Turn_On(G_LED_P);
       delay 3.0;
    end Execute;
 end Phase_4;
